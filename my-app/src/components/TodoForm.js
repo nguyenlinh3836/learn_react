@@ -1,28 +1,29 @@
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 
-const Form = ({setInputext}) => {
-    const inputTextHandler =(e)=> {
-        console.log(e.target.value);
-        setInputext(e.target.value);
+const TodoForm = (props) => {
+    const[input,setInput] = useState('');
+    const inputRef = useRef(null)
+    useEffect(()=> {
+        inputRef.current.focus()
+    })
+    const handleChange = e => {
+        setInput(e.target.value);
     };
-    const submitTodoHandler = (e) => {
+    const handlesubmit = e => {
         e.preventDefault();
-    }
+
+        props.onSubmit({
+            id: Math.floor(Math.random()*10000),
+            text:input
+        });
+        setInput('');
+    };
     return(
-         <form>
-             <input onChange={inputTextHandler} type="text" className="todo-input"/>
-             <button onClick={submitTodoHandler} className="todo-button" type="submit">
-                 <i className="fas fa-plus-square"></i>
-             </button>
-             <div className="select">
-                 <select name="todos" className="filter-todo">
-                     <option value="all">ALL</option>
-                     <option value="complete">Complete</option>
-                     <option value="uncomplete">Uncomplete</option>
-                 </select>
-             </div>
-         </form>
+            <form className="todo-form" onSubmit={handlesubmit}>
+                <input type="text" placeholder="Add to do" value={input} name="text" className="todo-input" onChange={handleChange} ref={inputRef}/>
+                <button className="todo-button edit" onClick={handlesubmit}>Add todo</button>
+            </form>
     );
 };
 
-export  default Form;
+export  default TodoForm;
